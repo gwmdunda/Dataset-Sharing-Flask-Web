@@ -1,0 +1,29 @@
+{% extends "detail/base.html" %}
+
+{% block inset %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Columns</th>
+        <td>{{column_name}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Total rows</th>
+        <td>{{nrows}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Filesize</th>
+        <td>{{fsize}} bytes</td>
+      </tr>
+    </tbody>
+</table>
+<form method=post>
+    <input type="submit" class="btn btn-sm btn-link" name="nah" value="Download dataset" readonly>
+</form>
+{% endblock %}

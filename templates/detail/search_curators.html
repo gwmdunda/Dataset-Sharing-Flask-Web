@@ -1,0 +1,43 @@
+{% extends "detail/base.html" %}
+
+{% block inset %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm align-self-center">
+        Search by username
+      </div>
+      <div class="col-sm">
+        <div class="card-body">
+          <form method="GET">
+            <div class="input-group rounded">
+                <input type="search" class="form-control rounded" placeholder="Search" name="q"/>
+                <span class="input-group-text border-0" id="search-addon">
+                  <button class="btn-xsm fas fa-search" type="submit">
+                  </button>
+                </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+{% for user in all_user%}
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm">
+        {{user.username}}
+      </div>
+      <div class="col-sm">
+        <form method=post>
+          <input type="submit" class="btn btn-sm btn-link" name="nah" value="Send invitation" readonly>
+          <input type="hidden" name="user_id_str" value="{{user.id}}">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+
+{% endblock %}

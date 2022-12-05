@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% macro render_field(field) %}
+  <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class="alert alert-danger">
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Sign Up</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger">
+                    {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form method=post>
+            <dl>
+                {{ render_field(form.name) }}
+                {{ render_field(form.username) }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                {{ render_field(form.confirm) }}
+                {{ render_field(form.occupation) }}
+                {{ render_field(form.country) }}
+            </dl>
+            <p><input type=submit value=Register>
+          </form>
+    </div>
+</div>
+{% endblock %}

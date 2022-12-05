@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="w-100" style="background-color: rgb(194, 210, 234);">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col">
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                class="rounded-circle img-fluid" style="width: 150px;">
+              <h5 class="my-3">{{current_user.name}}</h5>
+              <p class="text-muted mb-1">{{current_user.occupation}}</p>
+              <p class="text-muted mb-4">{{current_user.country}}</p>
+              <div class="d-flex justify-content-center mb-2">
+                <button type="button" class="btn btn-primary">Follow</button>
+                <button type="button" class="btn btn-outline-primary ms-1">Message</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Full Name</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{current_user.name}}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{current_user.email}}</p>
+                </div>
+              </div>
+          <div class="row mt-4 justify-content-between">
+            <div class="col-md-6">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body">
+                  <p> My dataset
+                  </p>
+                  {% for post in posts %}
+                  <div class="row">
+                    <div class="col-sm align-self-center">
+                      <p class="mb-1" style="font-size: .77rem;">{{post.title}}</p>
+                    </div>
+                    <div class="col-sm">
+                      <form method=post>
+                        <input type="submit" class="btn btn-sm btn-link" name="nah" value="Visit" readonly>
+                        <input type="hidden" name="post_id" value={{post.id}}>
+                      </form>
+                    </div>
+                  </div>
+                  {% endfor %}
+              </div>
+            </div>
+          </div>
+            <div class="col-md-6">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body">
+                  <p> Curator invitation 
+                  </p>
+                  {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                          <div class="alert alert-success">
+                              {{ messages[0] }}
+                          </div>
+                      {% endif %}
+                  {% endwith %}
+                  {% for inv in invs %}
+                  <div class="row">
+                    <div class="col-sm align-self-center">
+                      <p class="mb-1" style="font-size: .77rem;">{{inv.post.title}}</p>
+                    </div>
+                    <div class="col-sm">
+                      <form method=post>
+                        <input type="submit" class="btn btn-sm btn-link" name="nah" value="Accept" readonly>
+                        <input type="hidden" name="post_id_acc" value={{inv.post.id}}>
+                        <input type="hidden" name="accept" value=1>
+                      </form>
+                    </div>
+                    <div class="col-sm">
+                      <form method=post>
+                        <input type="submit" class="btn btn-sm btn-link" name="nah" value="Decline" readonly>
+                        <input type="hidden" name="post_id_acc" value={{inv.post.id}}>
+                        <input type="hidden" name="accept" value=0>
+                      </form>
+                    </div>
+                  </div>
+                  {% endfor %}  
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

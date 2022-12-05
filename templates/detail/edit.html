@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-6 offset-md-3 mt-5">
+      <div class="mb-2">
+        <h2>Edit the dataset information</h2>
+      </div>
+      <form accept-charset="UTF-8" action="{{url_for('main.update', slug=post.slug)}}" method="POST" enctype="multipart/form-data">
+        {{form.title.label}}:
+        {{form.title(size=60)}}
+        {% if form.title.errors %}
+          <ul class="errors">
+              {% for error in form.title.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+        {% endif %}
+        {{ form.description.label }}:
+        {{ form.description(rows=10, cols=90) }}
+
+        {% if form.description.errors %}
+            <ul class="errors">
+                {% for error in form.description.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+          <div class="form-group mt-3">
+            <label class="mr-2">Upload your csv file:</label>
+            <input type="file" id="file" name="file">
+          </div>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+              {{ messages[0] }}
+            </div>
+            {% endif %}
+          {% endwith %}
+          <hr>
+          <button class="btn btn-primary">Submit</button>
+     </form>
+ </div> 
+
+{% endblock %}

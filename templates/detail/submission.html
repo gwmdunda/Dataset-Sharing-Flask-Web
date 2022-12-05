@@ -1,0 +1,141 @@
+{% extends "detail/base.html" %}
+
+{% block inset %}
+<div class="card-body">
+    {%if sub%}
+    <h5 class="card-title">Manage submissions</h5>
+    {% if submissions %}
+    {% for s in submissions%}
+    <div class="card p-3">
+        <div class="d-flex align-items-center">
+            <div class="container">
+                <div class="row justify-content-between">
+                    <div class="col-sm">
+                        Raised by: {{s.collaborator.username}}
+                    </div>
+                    {% if s.curator %}
+                    <div class="col-sm">
+                        Currently curated by: {{s.curator.username}}
+                    </div>
+                    {% endif %}
+                    <div class="col-sm">
+                        Creation date: {{s.created.date()}}
+                    </div>
+                </div>
+            <div class="row justify-content-md-center mt-4">
+                <div class="text-break">
+                    {{s.comment}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-start mt-4">
+        <div class="col-2">
+            {% if current_user.id != s.curator.id%}
+            <a class="nav-link" data-toggle="modal" data-target="#choicemodal" data-val="{{s.id}}" href="#">
+                Curate
+            </a>
+            {% else %}
+            <form accept-charset="UTF-8" id="curate_form" action="{{url_for('detail.submission', slug=post.slug)}}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" id="fileupl">
+                <input type="hidden" name="action" value="{{s.id}}">
+                <a id="upload_edit" class="nav-link"  name="action"   href="#">
+                    Edit
+                </a>
+            </form>
+            {% endif %}
+        </div>
+        {% if current_user.id == s.curator.id%}
+        <div class="col-2">
+            <form method="POST" id="curate_accept_form">
+                <input type="hidden" name="action" value="{{s.id}}">
+                <input type="hidden" name="act" value="accept">
+                <a class="nav-link curate_accept" href="#">
+                    Accept
+                </a>
+            </form>
+        </div>
+        {% endif %}
+        <div class="col-2">
+            <form method="POST" id="curate_decline_form">
+                <input type="hidden" name="action" value="{{s.id}}">
+                <input type="hidden" name="act" value="decline">
+                <a class="nav-link curate_decline" href="#">
+                    Decline
+                </a>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="choicemodal" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document" >
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Curate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Do you want to curate the dataset?
+    </div>
+    <div class="modal-footer">
+        <form method=post>
+            <button type="submit" class="btn btn-secondary" data-dismiss="modal" name="nah">
+                No
+            </button>
+            <button type="submit" class="btn btn-primary"  name="action" id="submissioncurate" value="">
+                Yes
+            </button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+    {% endfor %}
+    {% else %}
+    <p class="card-text text-center"> There are no submissions </p>
+    {% endif %}
+    {% endif %}
+    <h5 class="card-title">Dataset submission</h5>
+    <p class="card-text text-center">Submit your collected data here. Once it is submitted,
+        the curator will be assigned to this submission and review your collected data.
+    </p>
+    <form accept-charset="UTF-8" action="{{url_for('detail.submission', slug=post.slug)}}" method="POST" enctype="multipart/form-data">
+        <div class="form-group mt-3">
+            <label class="ml-2">Upload your csv file:</label>
+            <input type="file" id="file" name="file" class="ml-2">
+        </div>
+        {{ form.comment.label }}:
+        {{ form.comment(rows=10, cols=70)}}
+
+        {% if form.comment.errors %}
+            <ul class="errors">
+                {% for error in form.comment.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {%if messages%}
+                {% if 'successful' in messages[0] %}
+                <div class="alert alert-success" role="alert">
+                {{ messages[0] }}
+                </div>
+                {% else %}
+                <div class="alert alert-danger" role="alert">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+        <button class="btn btn-primary">Submit</button>
+    </form>
+    
+</div>
+{% endblock %}

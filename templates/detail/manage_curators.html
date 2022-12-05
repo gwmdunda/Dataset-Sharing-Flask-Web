@@ -1,0 +1,35 @@
+{% extends "detail/base.html" %}
+
+{% block inset %}
+<div class="card-body">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert {% if 'success' in messages[0][0]%} alert-success {% else %} alert-danger {% endif %}">
+                    {{ messages[0][1] }}
+                </div>
+            {% endif %}
+    {% endwith %}
+    <h5 class="card-title">Manage curators</h5>
+    {% for assoc in assocs %}
+    <div class="card">
+    <div class="card-body">
+        <div class="row">
+        <div class="col-sm">
+            {{assoc.curator.username}}
+        </div>
+        <div class="col-sm">
+            {%if not assoc.accepted%} Pending {% endif %}
+        </div>
+        <div class="col-sm">
+            <form method=post>
+            <input type="submit" class="btn btn-sm btn-link" name="nah" value="Remove" readonly>
+            <input type="hidden" name="curator_id_str" value="{{assoc.curator.id}}">
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+    {% endfor %}
+    <small><a class="nav-link" href="{{url_for('detail.search_curators', slug=post.slug)}}">add curators</a></small>
+</div>
+{% endblock %}
