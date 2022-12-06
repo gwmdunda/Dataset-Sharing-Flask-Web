@@ -2,7 +2,7 @@
 
 This is full-stack web development project. The website is a platform for users to monetize their dataset projects, curate the projects, and explore many high quality datasets.
 
-## Video Introduction
+## Introduction Video
 [Link to Youtube](https://youtu.be/xHz_7vLR5rc "Link to Youtube")
 
 ## Features
