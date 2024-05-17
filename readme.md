@@ -18,3 +18,17 @@ This is full-stack web development project. The website is a platform for users 
 - [ ] Rollback projects
 - [ ] Responsive UI
 - [ ] Security Features (HTTPS, encryption, etc.)
+
+## Package Requirements
+- Flask
+- flask_sqlalchemy
+- flask_login
+- flask_admin
+- pycountry
+- email_validator
+- pandas
+- werkzeug
+- wtforms
+
+## How To Run
+``` python main.py ```
