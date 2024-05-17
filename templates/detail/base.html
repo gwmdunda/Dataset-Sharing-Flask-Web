@@ -19,7 +19,7 @@
       <li class="nav-item">
         <a class="nav-link {% if request.path == url_for('detail.view_dataset', slug=post.slug) %}active {% endif %}" href="{{url_for('detail.view_dataset', slug=post.slug)}}">View dataset</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" {% if current_user.is_anonymous %} hidden {% endif %}>
         <a class="nav-link {% if request.path == url_for('detail.submission', slug=post.slug) %}active {% endif %}" href="{{url_for('detail.submission', slug=post.slug)}}" >Submission</a>
       </li>
       <li class="nav-item" {%if current_user.id != post.admin_id %} hidden {% endif %}>

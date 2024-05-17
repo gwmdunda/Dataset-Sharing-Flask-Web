@@ -13,13 +13,6 @@ class CuratorAssociation(db.Model):
     curator = db.relationship("User", back_populates="posts", foreign_keys="CuratorAssociation.user_id")
     post = db.relationship("Post", back_populates="curators")
 
-# association_table = db.Table(
-#     "association",
-#     db.Model.metadata,
-#     db.Column("user_id", db.ForeignKey("user.id"), primary_key=True),
-#     db.Column("post_id", db.ForeignKey("post.id"), primary_key=True),
-# )
-
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)

@@ -1,18 +1,22 @@
-from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, FileField
 from wtforms.validators import InputRequired, Length, Email, DataRequired, EqualTo
 import pycountry
 
+
 class PostForm(Form):
     title = StringField('Title', validators=[InputRequired(), Length(min=1, max=300)])
-    description = TextAreaField('Description', validators=[InputRequired(), Length(min=100, max=4000) ])
+    description = TextAreaField('Description', validators=[InputRequired(), Length(min=100, max=4000)])
 
 class SubmissionForm(Form):
-    comment = TextAreaField('Comment', validators=[InputRequired(), Length(min=1, max=4000)])
+    csv_file = FileField('Upload your csv file:', validators=[InputRequired()])
+    comment = TextAreaField('Comment', validators=[InputRequired(), Length(min=1, max=4000)], \
+                            render_kw={'placeholder': 'Comments on your submission'})
 
 class CountrySelectField(SelectField):
     def __init__(self, *args, **kwargs):
         super(CountrySelectField, self).__init__(*args, **kwargs)
-        self.choices = [(country.alpha_2, country.name) for country in pycountry.countries]
+        self.choices = [country.name for country in pycountry.countries]
+        self.choices.sort()
 
 class RegistrationForm(Form):
     name = StringField('Name', validators=[InputRequired(), Length(max=60)])

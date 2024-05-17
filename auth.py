@@ -38,7 +38,7 @@ def signup(): # define the sign up function
             flash('Email address already exists')
             return redirect(url_for('auth.signup', form=form))
         new_user = User(email=form.email.data, name=form.name.data,  
-            password=generate_password_hash(form.password.data, method='sha256'), username=form.username.data,
+            password=generate_password_hash(form.password.data, method='pbkdf2:sha256'), username=form.username.data,
             occupation=form.occupation.data, country=form.country.data) #
         db.session.add(new_user)
         db.session.commit()

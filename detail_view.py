@@ -21,32 +21,31 @@ def description(slug):
 @detail.route('/<slug>/submission', methods=['GET', 'POST'])
 def submission(slug):
     post = Post.query.filter(Post.slug==slug).first()
-    collaborator_id_list = [ca.user_id for ca in post.curators.all()]
+    curator_id_list = [ca.user_id for ca in post.curators.all()]
     form = SubmissionForm()
     submissions = Submission.query.order_by(Submission.created.desc()).all()
     if request.method == "POST":
-        if current_user.id != post.admin_id and current_user.id not in collaborator_id_list:
-            file = request.files['file']
-            comment = request.form.get('comment')
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                new_filename = secure_filename(f'{filename.split(".")[0]}_{str(datetime.now())}.csv')
-                try:
-                    submission = Submission(comment=comment, filename=new_filename, collaborator=current_user)
-                    if not os.path.exists(os.path.join('uploads', post.slug, 'curate')):
-                        os.mkdir(os.path.join('uploads', post.slug, 'curate'))
-                    file.save(os.path.join('uploads', post.slug, 'curate', new_filename))
-                    db.session.add(submission)
-                    db.session.commit()
-                    flash('Submission is successful!')
-                    return redirect(url_for('detail.submission', slug=post.slug))
-                except:
-                    flash('There is something wrong with our backend, please try again later!')
-                    return redirect(url_for('detail.submission', slug=post.slug))
-            else:
-                flash('Please submit a valid file!')
+        file = request.files['csv_file']
+        comment = request.form.get('comment')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            new_filename = secure_filename(f'{filename.split(".")[0]}_{str(datetime.now())}.csv')
+            try:
+                submission = Submission(comment=comment, filename=new_filename, collaborator=current_user)
+                if not os.path.exists(os.path.join('uploads', post.slug, 'curate')):
+                    os.mkdir(os.path.join('uploads', post.slug, 'curate'))
+                file.save(os.path.join('uploads', post.slug, 'curate', new_filename))
+                db.session.add(submission)
+                db.session.commit()
+                flash('Submission is successful!')
                 return redirect(url_for('detail.submission', slug=post.slug))
-        else:
+            except:
+                flash('There is something wrong with our backend, please try again later!')
+                return redirect(url_for('detail.submission', slug=post.slug))
+        elif file and not allowed_file(file.filename):
+            flash('Please submit a valid file!')
+            return redirect(url_for('detail.submission', slug=post.slug))
+        if current_user.id == post.admin_id or current_user.id in curator_id_list:
             resp = request.form.get("action")
             which = request.form.get("act")
             f = request.files.get("file")
@@ -70,6 +69,7 @@ def submission(slug):
                 selected_submission.filename = new_filename
                 db.session.commit()
                 f.save(os.path.join(loc, "curate", new_filename))
+                submissions = Submission.query.order_by(Submission.created.desc()).all()
 
             if which and which == "accept":
                 resp = int(resp)
@@ -89,6 +89,8 @@ def submission(slug):
                 os.remove(os.path.join(loc, "curate", selected_submission.filename))
                 db.session.delete(selected_submission)
                 db.session.commit()
+                submissions = Submission.query.order_by(Submission.created.desc()).all()
+                
             
             if which and which == "decline":
                 resp = int(resp)
@@ -98,8 +100,9 @@ def submission(slug):
                 db.session.delete(selected_submission)
                 db.session.commit()
                 os.remove(exst_file)
+                
 
-    if current_user.id != post.admin_id and current_user.id not in collaborator_id_list:
+    if current_user.id != post.admin_id and current_user.id not in curator_id_list:
         return render_template('detail/submission.html', post=post, submissions=submissions, form=form, sub=False)
     else:
         return render_template('detail/submission.html', post=post, submissions=submissions, form=form, sub=True)

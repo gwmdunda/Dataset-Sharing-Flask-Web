@@ -25,12 +25,15 @@ def upload():
             new_filename = secure_filename(f'{filename.split(".")[0]}_{str(datetime.now())}.csv')
             try:
                 post = Post(title=title, description=description, filename=new_filename, admin=current_user)
+                if not os.path.exists('uploads'):
+                    os.makedirs('uploads')
                 os.mkdir(os.path.join('uploads', str(post.slug)))
                 file.save(os.path.join('uploads', post.slug, new_filename))
                 db.session.add(post)
                 db.session.commit()
                 return redirect(url_for('main.explore'))
-            except:
+            except Exception as e:
+                print(e)
                 flash('There is something wrong with our backend, please try again later!')
                 return redirect(url_for('main.upload'))
         else:
@@ -92,5 +95,7 @@ def explore():
 
 app = create_app() # we initialize our flask app using the __init__.py function
 if __name__ == '__main__':
-    db.create_all(app=app) # create the SQLite database
+    # db.create_all(app=app) # create the SQLite database
+    with app.app_context():
+        db.create_all()
     app.run(debug=True) # run the flask app on debug mode
